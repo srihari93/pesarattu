@@ -1,0 +1,10 @@
+{
+  "name": "pesarattu",
+  "version": "0.0.1",
+  "description": "Pesarattu is a node debugger plugin for vim.",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "aragundu": "^0.0.1"
+  }
+}

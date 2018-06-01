@@ -1,0 +1,7 @@
+# node package stuff
+node_modules
+yarn-error.log
+
+#vim stuff
+*.swp
+
