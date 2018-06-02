@@ -26,7 +26,8 @@ Needs a config file like this
 //
 module.exports = {
 
-  // Multiple "inspectable" instances can be defined here
+  // Multiple "inspectable" instances can be defined here.
+  // The instance names are keys in the instances object.
   instances: {
     // The instance name is needed to start debugging Ex: `:PesarattuDebugworker`
     worker: {
@@ -35,7 +36,7 @@ module.exports = {
       // Please use full file paths
       command: "node --inspect /home/srihari/com.alyne/worker/app.js"
     },
-    // The instance name is needed to start debugging Ex: `:PesarattuDebugworker`
+    // The instance name is needed to start debugging Ex: `:PesarattuDebugapi`
     api: {
       type: "node-inspect",
       // Please use full file paths
