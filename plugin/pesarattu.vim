@@ -40,12 +40,13 @@ endfunc
 call s:PesarattuEchom ('Pesarattu: starting aragundu server at:' . s:aragunduURL)
 
 let s:aragunduPath = expand('<sfile>:h') . '/../node_modules/aragundu/aragundu.js' 
-let s:aragunduCommand = 'node ' . s:aragunduPath . ' rcPath=' . g:pesarattu#rc . ' port=' . g:pesarattu#socketPort . ' > ' . g:pesarattu#aragundu#logs
+let s:aragunduCommand = 'node ' . s:aragunduPath . ' rcPath=' . g:pesarattu#rc . ' port=' . g:pesarattu#socketPort . ' logPath=' . g:pesarattu#aragundu#logs
 
 call s:PesarattuEchom ('raising aragundu server with: ' . s:aragunduCommand)
 
 if !exists('s:aragundu') || job_status(s:aragundu) !=# 'run'
-  let s:aragundu = job_start(s:aragunduCommand)
+  " let s:aragundu = job_start(s:aragunduCommand)
+  echom s:aragunduCommand
 endif
 
 " global variables

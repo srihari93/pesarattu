@@ -11,7 +11,7 @@ Use `:PesarattuBPAdd` to set breakpoint over the line under cursor.
 
 ## Installation
 
-Needs a server, [aragundu](https://www.npmjs.com/package/aragundu) for communicating with chrome devtools protocol provider. So run, `npm install` or `yarn` in the plugin's directory,
+Needs a server, [aragundu](https://github.com/srihari93/aragundu) for communicating with chrome devtools protocol provider. So run, `npm install` or `yarn` in the plugin's directory,
 
 If you are using [vim-plug](https://github.com/junegunn/vim-plug) to manage your plugins, add `Plug 'srihari93/pesarattu', {'do': 'npm install'}` so that you don't have to worry about the updates to aragundu.
 If you are using some other plugin manager, there would be a similar way to keep the dependency updated.
@@ -77,7 +77,8 @@ let g:pesarattu#socketURL = 'localhost'
 " The time in ms to wait before pesarattu connects to aragundu
 let g:pesarattu#socketURL = 500
 
-" The log location for aragundu. [ WIP ]
+" The log location for aragundu.
+" The logs of the instances, are appended with their names ex: /tmp/aragundu.log<instane>
 let g:pesarattu#aragundu#logs = $HOME . '/.aragundu.log'
 
 " The log location for the communication between aragundu and pesarattu

@@ -2,9 +2,9 @@
 # yarn lockfile v1
 
 
-aragundu@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/aragundu/-/aragundu-0.0.1.tgz#1dfedafbe91a0e0dc6d9d780728e1bb53005a33f"
+"aragundu@https://github.com/srihari93/aragundu":
+  version "0.0.2"
+  resolved "https://github.com/srihari93/aragundu#307f5ea0ceb1bb406edb40eda3913e68838d7882"
   dependencies:
     chrome-remote-interface "^0.25.6"
     lodash "^4.17.10"
