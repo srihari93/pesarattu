@@ -2,24 +2,28 @@
 
 ## Installation
 
-Needs a server, [aragundu](https://www.npmjs.com/package/aragundu) for communicating with chrome devtools protocol provider. so run, `npm install` or `yarn` in the plugin's directory,
+Needs a server, [aragundu](https://www.npmjs.com/package/aragundu) for communicating with chrome devtools protocol provider. So run, `npm install` or `yarn` in the plugin's directory,
 
-If you are using [vim-plug](https://github.com/junegunn/vim-plug) to manage your plugins, add `Plug 'srihari93/pesarattu', {'do': 'npm install'}` so that you dont have to worry about the updates to aragundu.
+If you are using [vim-plug](https://github.com/junegunn/vim-plug) to manage your plugins, add `Plug 'srihari93/pesarattu', {'do': 'npm install'}` so that you don't have to worry about the updates to aragundu.
 If you are using some other plugin manager, there would be a similar way to keep the dependency updated.
 
 ## Config
 
-Needs config file like this
+Needs a config file like this
 ```
-// Default File location: ~/.pesaratturc.js  for a js file
-// File location is configurable via g:pesarattu#rc with full file path, '/home/srihari/vankai/tenkai.js'
+//
+// Default config location: ~/.pesaratturc.js
+// Config location is set via g:pesarattu#rc with full file path.
+// Ex: let g:pesarattu#rc='/home/srihari/vankai/tenkai.js'
+// Would recommend having the config for all "inspectable" applications at one place.
+// pesarattu is being designed to handle multiple "inspections" at once.
 //
 module.exports = {
 
-  // the multiple node instances can be defined here
-  // hoping to add 'chrome-inspect' to debug web apps using chrome in the very far future.
+  // Multiple "inspectable" instances can be defined here
   instances: {
     worker: {
+      // Will add 'chrome-inspect' to debug web apps using chrome in the very far future.
       type: "node-inspect",
       // Please use fill file paths
       command: "node --inspect /home/srihari/com.alyne/worker/app.js"
