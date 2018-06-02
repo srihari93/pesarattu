@@ -32,22 +32,31 @@ module.exports = {
   // Multiple "inspectable" instances can be defined here.
   // The instance names are keys in the instances object.
   instances: {
+
+
     // The instance name is needed to start debugging Ex: `:PesarattuDebugworker`
     worker: {
+
       // Will add 'chrome-inspect' to debug web apps using chrome in the very far future.
       type: "node-inspect",
+
       // Please use full file paths
       command: "node --inspect /home/srihari/com.alyne/worker/app.js"
     },
+
+
     // The instance name is needed to start debugging Ex: `:PesarattuDebugapi`
     api: {
+
       type: "node-inspect",
+
       // Please use full file paths
       command: "node --inspect=9223 /home/srihari/com.alyne/api/app.js"
     }
   },
 
   aragundu: {
+
     // the port for communication with the server, aragundu
     port: 8765
   }
