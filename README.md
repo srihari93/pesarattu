@@ -3,7 +3,10 @@ A node/js debugger("inspection") plugin using the [chrome-remote-interface](http
 
 Since the [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/) is accessible, there is a crazy goal to support web app debugging as well. pesarattu is being built to handle more than one "inspection" instance. This would let you debug multiple node/js applications at once from a single instance of vim.
 
+## Usage
+
 Use `:PesarattuDebug<instance>` to start debugging the instance as named in the config file.
+
 Use `:PesarattuBPAdd` to set breakpoint over the line under cursor.
 
 ## Installation
