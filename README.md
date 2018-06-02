@@ -46,16 +46,22 @@ User configurable variables and their defaults
 ```vim
 " The config file location with the "inspectable" instances
 let g:pesarattu#rc = $HOME . '/.pesaratturc.js'
+
 " The socket for communication between pesarattu and aragundu
 let g:pesarattu#socketPort = 8765
+
 " The url for communication between pesarattu and aragundu
 let g:pesarattu#socketURL = 'localhost'
+
 " The log location for aragundu. [ WIP ]
 let g:pesarattu#aragundu#logs = $HOME . '/.aragundu.log'
+
 " The log location for the communication between aragundu and pesarattu
 let g:pesarattu#aragundu#comm#logs= $HOME . '/.pesarattu-aragundu-comm.log'
+
 " The sign for active breakpoints
 let g:pesarattu#breakpoint#active#sign = '●'
+
 " The sign for inactive breakpoints. [ WIP ]
 let g:pesarattu#breakpoint#inactive#sign = '○'
 ```
