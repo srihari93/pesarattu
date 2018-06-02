@@ -1,4 +1,10 @@
 # pesarattu
+A node/js debugger("inspection") plugin using the [chrome-remote-interface](https://www.npmjs.com/package/chrome-remote-interface). WIP.
+
+Since the [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/) is accessible a crazy goal is to support web app debugging as well. pesarattu is being built to handle more than one "inspection" instance. This would let you debug multiple node/js applications at once from a single instance of vim.
+
+Use `:PesarattuDebug<instance>` to start debugging the instance as named in the config file.
+Use `:PesarattuBPAdd` to set breakpoint over the line under cursor.
 
 ## Installation
 
@@ -22,12 +28,14 @@ module.exports = {
 
   // Multiple "inspectable" instances can be defined here
   instances: {
+    // The instance name is needed to start debugging Ex: `:PesarattuDebugworker`
     worker: {
       // Will add 'chrome-inspect' to debug web apps using chrome in the very far future.
       type: "node-inspect",
       // Please use full file paths
       command: "node --inspect /home/srihari/com.alyne/worker/app.js"
     },
+    // The instance name is needed to start debugging Ex: `:PesarattuDebugworker`
     api: {
       type: "node-inspect",
       // Please use full file paths
@@ -53,6 +61,9 @@ let g:pesarattu#socketPort = 8765
 " The url for communication between pesarattu and aragundu
 let g:pesarattu#socketURL = 'localhost'
 
+" The time in ms to wait before pesarattu connects to aragundu
+let g:pesarattu#socketURL = 500
+
 " The log location for aragundu. [ WIP ]
 let g:pesarattu#aragundu#logs = $HOME . '/.aragundu.log'
 
@@ -64,6 +75,9 @@ let g:pesarattu#breakpoint#active#sign = '●'
 
 " The sign for inactive breakpoints. [ WIP ]
 let g:pesarattu#breakpoint#inactive#sign = '○'
+
+" Set this to receive more messages from pesarttu
+let g:pesarattu#echom = 'echom'
 ```
 
 ## Todo
