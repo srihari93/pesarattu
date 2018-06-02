@@ -8,6 +8,9 @@ endif
 if !exists('g:pesarattu#socketURL')
   let g:pesarattu#socketURL = 'localhost'
 endif
+if !exists('g:pesarattu#socketWait')
+  let g:pesarattu#socketWait = 500
+endif
 if !exists('g:pesarattu#aragundu#logs')
   let g:pesarattu#aragundu#logs = $HOME . '/.aragundu.log'
 endif
@@ -36,6 +39,15 @@ endfunc
 
 call s:PesarattuEchom ('Pesarattu: starting aragundu server at:' . s:aragunduURL)
 
+let s:aragunduPath = expand('<sfile>:h') . '/../node_modules/aragundu/aragundu.js' 
+let s:aragunduCommand = 'node ' . s:aragunduPath . ' rcPath=' . g:pesarattu#rc . ' port=' . g:pesarattu#socketPort . ' > ' . g:pesarattu#aragundu#logs
+
+call s:PesarattuEchom ('raising aragundu server with: ' . s:aragunduCommand)
+
+if !exists('s:aragundu') || job_status(s:aragundu) !=# 'run'
+  let s:aragundu = job_start(s:aragunduCommand)
+endif
+
 " global variables
 " s:aragunduChannel
 " s:pesrattuInstances
@@ -53,7 +65,7 @@ func! g:PesarattuAragunduHandler(channel, m)
     let s:pesarattuInstances = a:m.instances
     call s:AddDebugInstances(a:m.instances)
   else
-    echom 'Pesarattu.aragunu:' 
+    echom 'Pesarattu.aragundu:' 
     echom a:m
   endif
 endfunc
@@ -63,8 +75,9 @@ func! Pesarattu#connect()
     echom 'Pesarattu: already connected to server, aragundu: ' . s:aragunduChannel
     return
   endif
+
   call ch_logfile(g:pesarattu#aragundu#comm#logs, 'w')
-  let s:aragunduChannel = ch_open(s:aragunduURL, {'callback':'g:PesarattuAragunduHandler'})
+  let s:aragunduChannel = ch_open(s:aragunduURL, {'callback':'g:PesarattuAragunduHandler', 'waittime': g:pesarattu#socketWait})
   if( ch_status(s:aragunduChannel) !=# 'open')
     call s:PesarattuEchom ('Pesarattu: failed to connnect to server, aragundu: ' . s:aragunduChannel)
     return
@@ -116,17 +129,11 @@ func! PesarattuDebug(instance)
   call ch_sendexpr(s:aragunduChannel, {'attu':'debug' , 'instance':a:instance}, {'callback': 'g:PesarattuPrepUI'})
 endfunc
 
-let s:aragunduPath = expand('<sfile>:h') . '/../node_modules/aragundu/aragundu.js' 
-let s:aragunduCommand = 'node ' . s:aragunduPath . ' rcPath=' . g:pesarattu#rc . ' port=' . g:pesarattu#socketPort . ' > ' . g:pesarattu#aragundu#logs
-
-call s:PesarattuEchom ('raising aragundu server with: ' . s:aragunduCommand)
-" let s:aragundu = job_start(s:aragunduCommand)
-
 " --------------------------------
 "  Expose our commands to the user
 " --------------------------------
 command! PesarattuStart call Pesarattu#connect()
 command! PesarattuStop call PesarattuBurn()
-command! PesarattuBPadd call PesarattuSetBreakPoint()
+command! PesarattuBPAdd call PesarattuSetBreakPoint()
 
 PesarattuStart
