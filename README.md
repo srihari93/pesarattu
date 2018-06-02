@@ -25,12 +25,12 @@ module.exports = {
     worker: {
       // Will add 'chrome-inspect' to debug web apps using chrome in the very far future.
       type: "node-inspect",
-      // Please use fill file paths
+      // Please use full file paths
       command: "node --inspect /home/srihari/com.alyne/worker/app.js"
     },
     api: {
       type: "node-inspect",
-      // Please use fill file paths
+      // Please use full file paths
       command: "node --inspect=9223 /home/srihari/com.alyne/api/app.js"
     }
   },
