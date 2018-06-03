@@ -45,8 +45,8 @@ let s:aragunduCommand = 'node ' . s:aragunduPath . ' rcPath=' . g:pesarattu#rc .
 call s:PesarattuEchom ('raising aragundu server with: ' . s:aragunduCommand)
 
 if !exists('s:aragundu') || job_status(s:aragundu) !=# 'run'
-  " let s:aragundu = job_start(s:aragunduCommand)
-  echom s:aragunduCommand
+  let s:aragundu = job_start(s:aragunduCommand)
+  " echom s:aragunduCommand
 endif
 
 " global variables
