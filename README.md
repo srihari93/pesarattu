@@ -10,7 +10,9 @@ Use `:PesarattuDebug<instance>` to start debugging the instance as named in the 
 Use `:PesarattuLogs<instance>` or `:PesarattuLogs<instance>V` to view the logs of the instance.
 Support for live reloading and ansi tty color for logs if [vim-autoread](https://github.com/chrisbra/vim-autoread) and [vim-plug-AnsiEsc](https://github.com/powerman/vim-plugin-AnsiEsc) are installed.
 
-Use `:PesarattuBPAdd` to set breakpoint over the line under cursor.
+Use `:PesarattuBPAdd` to set breakpoint on the line under cursor.
+
+Use `:PesarattuBPRemove` to remove breakpoint on the line under cursor.
 
 Use `:PesarattuAragunduLogs` or `:PesarattuAragunduLogs`  to view the log being written by aragundu
 
@@ -112,7 +114,7 @@ let g:pesarattu#echom = 'echom'
 - [x] Enable logging to files
 - [x] Log files loadable in vim with commands, reload support
 - [x] Respond to script paused on breakpoint events
-- [ ] Remove Breakpoints
+- [x] Remove Breakpoints
 - [ ] Resume Breaks
 - [ ] Continue
 - [ ] Paused event on non-breakpoints

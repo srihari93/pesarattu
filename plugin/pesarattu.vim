@@ -30,9 +30,14 @@ if !exists('g:pesarattu#breakpoint#paused#hl')
   let g:pesarattu#breakpoint#paused#hl = 'Debug'
 endif
 
-execute 'sign define PesarattuBPActive text=' . g:pesarattu#breakpoint#active#sign
-execute 'sign define PesarattuBPActivePaused text=' . g:pesarattu#breakpoint#active#sign . ' linehl=' . g:pesarattu#breakpoint#paused#hl
-execute 'sign define PesarattuBPInactive text=' . g:pesarattu#breakpoint#inactive#sign
+func! s:defineSigns()
+  execute 'sign define PesarattuBPActive text=' . g:pesarattu#breakpoint#active#sign
+  execute 'sign define PesarattuBPActivePaused text=' . g:pesarattu#breakpoint#active#sign . ' linehl=' . g:pesarattu#breakpoint#paused#hl
+  execute 'sign define PesarattuBPInactive text=' . g:pesarattu#breakpoint#inactive#sign
+endfunc
+
+call s:defineSigns()
+
 
 let s:aragunduURL = g:pesarattu#socketURL . ':' . g:pesarattu#socketPort
 
@@ -114,10 +119,37 @@ func! g:PesarattuPrepUI(ch,m)
 endfunc
 
 func! g:PesarattuSetBPResp(ch,m)
+  if(!exists('a:m') || type(a:m)!=type({}) || !has_key(a:m, 'status') || a:m.status!=#'success')
+    echom 'Pesarattu, set breakpoint failed:  ' . string(a:m)
+    return
+  endif
   for l:l in a:m.locations
     let l:line = string(l:l.lineNumber)
     execute 'sign place ' . l:line . ' line=' . l:line . ' name=PesarattuBPActive file=' . l:l.url
   endfor
+endfunc
+
+func! g:PesarattuRemoveBPResp(ch,m)
+  if(!exists('a:m') || type(a:m)!=type({}) || !has_key(a:m, 'status') || a:m.status!=#'success')
+    echom 'Pesarattu, remove breakpoint failed:  ' . string(a:m)
+    return
+  endif
+  for l:l in a:m.locations
+    let l:line = string(l:l.lineNumber)
+    execute 'sign place ' . l:line . ' line=' . l:line . ' name=PesarattuBPInactive file=' . l:l.url
+  endfor
+endfunc
+
+func! PesarattuRemoveBreakPoint()
+  if !exists('g:PesarattuActiveInstance')
+    echom 'Pesarattu: No instance is active. Try :PesarattuDebug<instance>'
+  endif
+  let l:msg = {}
+  let l:msg.attu = 'removeBP'
+  let l:msg.instance = g:PesarattuActiveInstance
+  let l:msg.lineNumber = line('.')
+  let l:msg.url = expand('%:p')
+  call ch_sendexpr(s:aragunduChannel, l:msg, {'callback': 'g:PesarattuRemoveBPResp'})
 endfunc
 
 func! PesarattuSetBreakPoint()
@@ -162,6 +194,7 @@ endfunc
 command! PesarattuStart call Pesarattu#connect()
 command! PesarattuStop call PesarattuBurn()
 command! PesarattuBPAdd call PesarattuSetBreakPoint()
+command! PesarattuBPRemove call PesarattuRemoveBreakPoint()
 command! PesarattuAragunduLogsV call PesarattuLogs(g:pesarattu#aragundu#logs ,'vplit')'
 command! PesarattuAragunduLogs call PesarattuLogs(g:pesarattu#aragundu#logs ,'split')
 
