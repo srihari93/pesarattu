@@ -49,13 +49,11 @@ if !exists('s:aragundu') || job_status(s:aragundu) !=# 'run'
   " echom s:aragunduCommand
 endif
 
-" global variables
-" s:aragunduChannel
-" s:pesrattuInstances
-
 func! s:AddDebugInstances(instances)
   for l:i in a:instances
     execute 'command! PesarattuDebug'.l:i. ' call PesarattuDebug("'.l:i.'")'
+    execute 'command! PesarattuLogs'.l:i. 'V call PesarattuLogs("'.g:pesarattu#aragundu#logs .l:i.'","vsplit")'
+    execute 'command! PesarattuLogs'.l:i. '  call PesarattuLogs("'.g:pesarattu#aragundu#logs .l:i.'","split")'
   endfor
 endfunc
 
@@ -122,6 +120,22 @@ func! PesarattuSetBreakPoint()
   call ch_sendexpr(s:aragunduChannel, l:msg, {'callback': 'g:PesarattuSetBPResp'})
 endfunc
 
+func! PesarattuLogs(loc, command)
+  execute a:command . ' ' . a:loc 
+  execute '$'
+  execute 'setlocal noswapfile'
+  if exists(':AutoRead')
+    execute 'AutoRead'
+    execute 'autocmd BufRead ' . a:loc . ' execute "$"'
+    execute 'autocmd BufRead ' . a:loc . ' execute "$"'
+  endif
+  if exists(':AnsiEsc')
+    execute 'AnsiEsc'
+    execute 'autocmd BufRead ' . a:loc . ' execute "AnsiEsc"'
+    execute 'autocmd BufRead ' . a:loc . ' execute "AnsiEsc"'
+  endif
+endfunc
+
 func! PesarattuDebug(instance)
   " if pesarattu is not connected, connect it
   if(!exists('s:aragunduChannel') || ch_status(s:aragunduChannel) !=# 'open')
@@ -136,5 +150,7 @@ endfunc
 command! PesarattuStart call Pesarattu#connect()
 command! PesarattuStop call PesarattuBurn()
 command! PesarattuBPAdd call PesarattuSetBreakPoint()
+command! PesarattuAragunduLogsV call PesarattuLogs(g:pesarattu#aragundu#logs ,'vplit')'
+command! PesarattuAragunduLogs call PesarattuLogs(g:pesarattu#aragundu#logs ,'split')
 
 PesarattuStart

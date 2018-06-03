@@ -7,7 +7,12 @@ Since the [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-p
 
 Use `:PesarattuDebug<instance>` to start debugging the instance as named in the config file.
 
+Use `:PesarattuLogs<instance>` or `:PesarattuLogs<instance>V` to view the logs of the instance.
+Support for live reloading and ansi tty color for logs if [vim-autoread](https://github.com/chrisbra/vim-autoread)and [vim-plug-AnsiEsc](https://github.com/powerman/vim-plugin-AnsiEsc) are installed.
+
 Use `:PesarattuBPAdd` to set breakpoint over the line under cursor.
+
+Use `:PesarattuAragunduLogs` or `:PesarattuAragunduLogs`  to view the log being written by aragundu
 
 ## Installation
 
@@ -102,7 +107,7 @@ let g:pesarattu#echom = 'echom'
 - [x] Add Breakpoints
 - [x] Indicate Breakpoints
 - [x] Enable logging to files
-- [ ] Log files loadable in vim with commands
+- [x] Log files loadable in vim with commands, reload support
 - [ ] Remove Breakpoints
 - [ ] Respond to script paused events
 - [ ] Take care of script resumed events
