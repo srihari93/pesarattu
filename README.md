@@ -101,6 +101,8 @@ let g:pesarattu#echom = 'echom'
 - [x] Initiate an instance in the config for debugging
 - [x] Add Breakpoints
 - [x] Indicate Breakpoints
+- [x] Enable logging to files
+- [ ] Log files loadable in vim with commands
 - [ ] Remove Breakpoints
 - [ ] Respond to script paused events
 - [ ] Take care of script resumed events
