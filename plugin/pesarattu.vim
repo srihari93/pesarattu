@@ -26,7 +26,12 @@ if !exists('g:pesarattu#breakpoint#inactive#sign')
   let g:pesarattu#breakpoint#inactive#sign = '○'
 endif
 
+if !exists('g:pesarattu#breakpoint#paused#hl')
+  let g:pesarattu#breakpoint#paused#hl = 'Debug'
+endif
+
 execute 'sign define PesarattuBPActive text=' . g:pesarattu#breakpoint#active#sign
+execute 'sign define PesarattuBPActivePaused text=' . g:pesarattu#breakpoint#active#sign . ' linehl=' . g:pesarattu#breakpoint#paused#hl
 execute 'sign define PesarattuBPInactive text=' . g:pesarattu#breakpoint#inactive#sign
 
 let s:aragunduURL = g:pesarattu#socketURL . ':' . g:pesarattu#socketPort
@@ -37,7 +42,7 @@ func! s:PesarattuEchom(m)
   endif
 endfunc
 
-call s:PesarattuEchom ('Pesarattu: starting aragundu server at:' . s:aragunduURL)
+" call s:PesarattuEchom ('Pesarattu: starting aragundu server at:' . s:aragunduURL)
 
 let s:aragunduPath = expand('<sfile>:h') . '/../node_modules/aragundu/aragundu.js' 
 let s:aragunduCommand = 'node ' . s:aragunduPath . ' rcPath=' . g:pesarattu#rc . ' port=' . g:pesarattu#socketPort . ' logPath=' . g:pesarattu#aragundu#logs
@@ -63,9 +68,16 @@ func! g:PesarattuAragunduHandler(channel, m)
   elseif type(a:m)==type({}) && has_key(a:m,'instances')
     let s:pesarattuInstances = a:m.instances
     call s:AddDebugInstances(a:m.instances)
+  elseif type(a:m)==type({}) && has_key(a:m,'pausedBP')
+    for l:l in a:m.pausedBP.locations
+      echom 'scipt paused at: ' . l:l.url
+      let l:line = string(l:l.lineNumber)
+      execute 'sign place ' . l:line . ' line=' . l:line . ' name=PesarattuBPActivePaused file=' . l:l.url
+      execute 'e ' . l:l.url
+      call cursor(l:line, has_key(l:l,'columnNumber') ? l:l.columnNumber : 0)
+    endfor
   else
-    echom 'Pesarattu.aragundu:' 
-    echom a:m
+    echom 'Pesarattu.aragundu:' . string(a:m)
   endif
 endfunc
 

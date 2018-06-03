@@ -8,7 +8,7 @@ Since the [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-p
 Use `:PesarattuDebug<instance>` to start debugging the instance as named in the config file.
 
 Use `:PesarattuLogs<instance>` or `:PesarattuLogs<instance>V` to view the logs of the instance.
-Support for live reloading and ansi tty color for logs if [vim-autoread](https://github.com/chrisbra/vim-autoread)and [vim-plug-AnsiEsc](https://github.com/powerman/vim-plugin-AnsiEsc) are installed.
+Support for live reloading and ansi tty color for logs if [vim-autoread](https://github.com/chrisbra/vim-autoread) and [vim-plug-AnsiEsc](https://github.com/powerman/vim-plugin-AnsiEsc) are installed.
 
 Use `:PesarattuBPAdd` to set breakpoint over the line under cursor.
 
@@ -92,6 +92,9 @@ let g:pesarattu#aragundu#comm#logs= $HOME . '/.pesarattu-aragundu-comm.log'
 " The sign for active breakpoints
 let g:pesarattu#breakpoint#active#sign = '●'
 
+" The highlighting group for the line where script is paused because of a breakpoint
+let g:pesarattu#breakpoint#paused#hl = 'Debug'
+
 " The sign for inactive breakpoints. [ WIP ]
 let g:pesarattu#breakpoint#inactive#sign = '○'
 
@@ -108,8 +111,8 @@ let g:pesarattu#echom = 'echom'
 - [x] Indicate Breakpoints
 - [x] Enable logging to files
 - [x] Log files loadable in vim with commands, reload support
+- [x] Respond to script paused on breakpoint events
 - [ ] Remove Breakpoints
-- [ ] Respond to script paused events
 - [ ] Take care of script resumed events
 - [ ] Add a console
 - [ ] Pipe logs to the console
