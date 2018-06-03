@@ -113,6 +113,12 @@ let g:pesarattu#echom = 'echom'
 - [x] Log files loadable in vim with commands, reload support
 - [x] Respond to script paused on breakpoint events
 - [ ] Remove Breakpoints
+- [ ] Resume Breaks
+- [ ] Continue
+- [ ] Paused event on non-breakpoints
+- [ ] Continue to next Breakpoint
+- [ ] Restart
+- [ ] Stop
 - [ ] Take care of script resumed events
 - [ ] Add a console
 - [ ] Pipe logs to the console
