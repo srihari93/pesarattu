@@ -1,5 +1,5 @@
 # pesarattu
-A node/js debugger("inspection") plugin using the [chrome-remote-interface](https://www.npmjs.com/package/chrome-remote-interface). WIP.
+A node/js debugger("inspection") plugin for vim using the [chrome-remote-interface](https://www.npmjs.com/package/chrome-remote-interface). WIP.
 
 Since the [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/) is accessible, there is a crazy goal to support web app debugging as well. pesarattu is being built to handle more than one "inspection" instance. This would let you debug multiple node/js applications at once from a single instance of vim.
 
@@ -115,7 +115,7 @@ let g:pesarattu#echom = 'echom'
 - [x] Log files loadable in vim with commands, reload support
 - [x] Respond to script paused on breakpoint events
 - [x] Remove Breakpoints
-- [ ] Resume Breaks
+- [x] Resume scripts
 - [ ] Continue
 - [ ] Paused event on non-breakpoints
 - [ ] Continue to next Breakpoint

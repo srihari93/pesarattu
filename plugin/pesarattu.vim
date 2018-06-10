@@ -50,12 +50,15 @@ endfunc
 " call s:PesarattuEchom ('Pesarattu: starting aragundu server at:' . s:aragunduURL)
 
 let s:aragunduPath = expand('<sfile>:h') . '/../node_modules/aragundu/aragundu.js' 
-let s:aragunduCommand = 'node ' . s:aragunduPath . ' rcPath=' . g:pesarattu#rc . ' port=' . g:pesarattu#socketPort . ' logPath=' . g:pesarattu#aragundu#logs
 
-call s:PesarattuEchom ('raising aragundu server with: ' . s:aragunduCommand)
+if !exists('g:aragunduCommand')
+  let g:aragunduCommand = 'node ' . s:aragunduPath . ' rcPath=' . g:pesarattu#rc . ' port=' . g:pesarattu#socketPort . ' logPath=' . g:pesarattu#aragundu#logs
+endif
+
+call s:PesarattuEchom ('raising aragundu server with: ' . g:aragunduCommand)
 
 if !exists('s:aragundu') || job_status(s:aragundu) !=# 'run'
-  let s:aragundu = job_start(s:aragunduCommand)
+  let s:aragundu = job_start(g:aragunduCommand)
   " echom s:aragunduCommand
 endif
 
@@ -77,18 +80,21 @@ func! g:PesarattuAragunduHandler(channel, m)
     for l:l in a:m.pausedBP.locations
       echom 'scipt paused at: ' . l:l.url
       let l:line = string(l:l.lineNumber)
-      execute 'sign place ' . l:line . ' line=' . l:line . ' name=PesarattuBPActivePaused file=' . l:l.url
+      let s:PesarattuPausedSignId = l:line
+      execute 'sign place ' . s:PesarattuPausedSignId . ' line=' . l:line . ' name=PesarattuBPActivePaused file=' . l:l.url
       execute 'e ' . l:l.url
       call cursor(l:line, has_key(l:l,'columnNumber') ? l:l.columnNumber : 0)
     endfor
+  elseif type(a:m)==type({}) && has_key(a:m,'greeting')
+    call s:PesarattuEchom(string(a:m.greeting))
   else
-    echom 'Pesarattu.aragundu:' . string(a:m)
+    echom 'Pesarattu.aragundu: ' . string(a:m)
   endif
 endfunc
 
 func! Pesarattu#connect()
   if(exists('s:aragunduChannel') && ch_status(s:aragunduChannel) ==# 'open')
-    echom 'Pesarattu: already connected to server, aragundu: ' . s:aragunduChannel
+    call s:PesarattuEchom ( 'Pesarattu: already connected to server, aragundu: ' . s:aragunduChannel )
     return
   endif
 
@@ -112,9 +118,12 @@ func! PesarattuBurn()
   endif
 endfunc
 
-func! g:PesarattuPrepUI(ch,m)
+func! g:PesarattuStartDebugResp(ch,m)
+  echom 'startdebug resp ' . string(a:m)
   if type(a:m) == type({}) && has_key(a:m, 'instance') && has_key(a:m, 'status') && a:m.status ==# 'success'
     let g:PesarattuActiveInstance = a:m.instance 
+  else 
+    echom 'Pesarattu, cannot debug: ' . string(a:m)
   endif
 endfunc
 
@@ -127,6 +136,27 @@ func! g:PesarattuSetBPResp(ch,m)
     let l:line = string(l:l.lineNumber)
     execute 'sign place ' . l:line . ' line=' . l:line . ' name=PesarattuBPActive file=' . l:l.url
   endfor
+endfunc
+
+func! g:PesarattuResumeResp(ch,m)
+  if(!exists('a:m') || type(a:m)!=type({}) || !has_key(a:m, 'status') || a:m.status!=#'success')
+    echom 'Pesarattu, remove breakpoint failed:  ' . string(a:m)
+    return
+  endif
+  if exists('s:PesarattuPausedSignId')
+    execute 'sign unplace ' . s:PesarattuPausedSignId
+  endif
+endfunc
+
+func! PesarattuResume()
+  if !exists('g:PesarattuActiveInstance')
+    echom 'Pesarattu: No instance is active. Try :PesarattuDebug<instance>'
+    return
+  endif
+  let l:msg = {}
+  let l:msg.attu = 'resume'
+  let l:msg.instance = g:PesarattuActiveInstance
+  call ch_sendexpr(s:aragunduChannel, l:msg, {'callback': 'g:PesarattuResumeResp'})
 endfunc
 
 func! g:PesarattuRemoveBPResp(ch,m)
@@ -143,6 +173,7 @@ endfunc
 func! PesarattuRemoveBreakPoint()
   if !exists('g:PesarattuActiveInstance')
     echom 'Pesarattu: No instance is active. Try :PesarattuDebug<instance>'
+    return
   endif
   let l:msg = {}
   let l:msg.attu = 'removeBP'
@@ -155,6 +186,7 @@ endfunc
 func! PesarattuSetBreakPoint()
   if !exists('g:PesarattuActiveInstance')
     echom 'Pesarattu: No instance is active. Try :PesarattuDebug<instance>'
+    return
   endif
   let l:msg = {}
   let l:msg.attu = 'setBP'
@@ -183,9 +215,9 @@ endfunc
 func! PesarattuDebug(instance)
   " if pesarattu is not connected, connect it
   if(!exists('s:aragunduChannel') || ch_status(s:aragunduChannel) !=# 'open')
-    PesarattuStart
+    call Pesarattu#connect()
   endif
-  call ch_sendexpr(s:aragunduChannel, {'attu':'debug' , 'instance':a:instance}, {'callback': 'g:PesarattuPrepUI'})
+  call ch_sendexpr(s:aragunduChannel, {'attu':'debug' , 'instance':a:instance}, {'callback': 'g:PesarattuStartDebugResp'})
 endfunc
 
 " --------------------------------
@@ -195,6 +227,7 @@ command! PesarattuStart call Pesarattu#connect()
 command! PesarattuStop call PesarattuBurn()
 command! PesarattuBPAdd call PesarattuSetBreakPoint()
 command! PesarattuBPRemove call PesarattuRemoveBreakPoint()
+command! PesarattuResume call PesarattuResume()
 command! PesarattuAragunduLogsV call PesarattuLogs(g:pesarattu#aragundu#logs ,'vplit')'
 command! PesarattuAragunduLogs call PesarattuLogs(g:pesarattu#aragundu#logs ,'split')
 
