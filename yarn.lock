@@ -4,7 +4,7 @@
 
 "aragundu@https://github.com/srihari93/aragundu":
   version "0.0.2"
-  resolved "https://github.com/srihari93/aragundu#63f912a02c798adecf74f3c9580d96b688fd247c"
+  resolved "https://github.com/srihari93/aragundu#3cc4b715770b7c326933902b6f324358d9533c4a"
   dependencies:
     chrome-remote-interface "^0.25.6"
     lodash "^4.17.10"
