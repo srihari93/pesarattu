@@ -50,6 +50,7 @@ endfunc
 " call s:PesarattuEchom ('Pesarattu: starting aragundu server at:' . s:aragunduURL)
 
 let s:aragunduPath = expand('<sfile>:h') . '/../node_modules/aragundu/aragundu.js' 
+call s:PesarattuEchom ('Default aragundu path' . s:aragunduPath)
 
 if !exists('g:aragunduCommand')
   let g:aragunduCommand = 'node ' . s:aragunduPath . ' rcPath=' . g:pesarattu#rc . ' port=' . g:pesarattu#socketPort . ' logPath=' . g:pesarattu#aragundu#logs
@@ -57,9 +58,8 @@ endif
 
 call s:PesarattuEchom ('raising aragundu server with: ' . g:aragunduCommand)
 
-if !exists('s:aragundu') || job_status(s:aragundu) !=# 'run'
-  let s:aragundu = job_start(g:aragunduCommand)
-  " echom s:aragunduCommand
+if !exists('g:aragundu') || job_status(g:aragundu) !=# 'run'
+  let g:aragundu = job_start(g:aragunduCommand)
 endif
 
 func! s:AddDebugInstances(instances)
@@ -107,14 +107,14 @@ func! Pesarattu#connect()
   call s:PesarattuEchom( 'Pesarattu: connected to server, aragundu: ' . s:aragunduChannel)
 endfunc
 
-func! PesarattuBurn()
+func! Pesarattu#Stop()
   if(exists('s:aragunduChannel') && ch_status(s:aragunduChannel) ==# 'open')
     call ch_close(s:aragunduChannel)
     unlet s:aragunduChannel
   endif
-  if(exists('s:aragundu'))
-    call job_stop(s:aragundu)
-    unlet s:aragundu
+  if(exists('g:aragundu'))
+    call job_stop(g:aragundu)
+    unlet g:aragundu
   endif
 endfunc
 
@@ -154,7 +154,7 @@ func! PesarattuResume()
     return
   endif
   let l:msg = {}
-  let l:msg.attu = 'resume'
+  let l:msg.command = 'resume'
   let l:msg.instance = g:PesarattuActiveInstance
   call ch_sendexpr(s:aragunduChannel, l:msg, {'callback': 'g:PesarattuResumeResp'})
 endfunc
@@ -176,7 +176,7 @@ func! PesarattuRemoveBreakPoint()
     return
   endif
   let l:msg = {}
-  let l:msg.attu = 'removeBP'
+  let l:msg.command = 'removeBP'
   let l:msg.instance = g:PesarattuActiveInstance
   let l:msg.lineNumber = line('.')
   let l:msg.url = expand('%:p')
@@ -189,7 +189,7 @@ func! PesarattuSetBreakPoint()
     return
   endif
   let l:msg = {}
-  let l:msg.attu = 'setBP'
+  let l:msg.command = 'setBP'
   let l:msg.instance = g:PesarattuActiveInstance
   let l:msg.lineNumber = line('.')
   let l:msg.url = expand('%:p')
@@ -217,14 +217,14 @@ func! PesarattuDebug(instance)
   if(!exists('s:aragunduChannel') || ch_status(s:aragunduChannel) !=# 'open')
     call Pesarattu#connect()
   endif
-  call ch_sendexpr(s:aragunduChannel, {'attu':'debug' , 'instance':a:instance}, {'callback': 'g:PesarattuStartDebugResp'})
+  call ch_sendexpr(s:aragunduChannel, {'command':'debug' , 'instance':a:instance}, {'callback': 'g:PesarattuStartDebugResp'})
 endfunc
 
 " --------------------------------
 "  Expose our commands to the user
 " --------------------------------
 command! PesarattuStart call Pesarattu#connect()
-command! PesarattuStop call PesarattuBurn()
+command! PesarattuStop call Pesarattu#Stop()
 command! PesarattuBPAdd call PesarattuSetBreakPoint()
 command! PesarattuBPRemove call PesarattuRemoveBreakPoint()
 command! PesarattuResume call PesarattuResume()
